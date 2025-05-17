@@ -11,9 +11,19 @@ Function Invoke-ExecListAppId {
     param($Request, $TriggerMetadata)
     Get-CIPPAuthentication
     $APIName = $Request.Params.CIPPEndpoint
-    Write-LogMessage -headers $Request.Headers -API $APINAME -message 'Accessed this API' -Sev 'Debug'
+    $Headers = $Request.Headers
+    Write-LogMessage -headers $Headers -API $APIName -message 'Accessed this API' -Sev 'Debug'
     $ResponseURL = "$(($Request.headers.'x-ms-original-url').replace('/api/ExecListAppId','/api/ExecSAMSetup'))"
-
+    #make sure we get the very latest version of the appid from kv:
+    if ($env:AzureWebJobsStorage -eq 'UseDevelopmentStorage=true') {
+        $DevSecretsTable = Get-CIPPTable -tablename 'DevSecrets'
+        $Secret = Get-CIPPAzDataTableEntity @DevSecretsTable -Filter "PartitionKey eq 'Secret' and RowKey eq 'Secret'"
+        $env:ApplicationID = $Secret.ApplicationID
+        $env:TenantID = $Secret.TenantID
+    } else {
+        $env:ApplicationID = (Get-AzKeyVaultSecret -AsPlainText -VaultName $env:WEBSITE_DEPLOYMENT_ID -Name 'ApplicationID').SecretValueText
+        $env:TenantID = (Get-AzKeyVaultSecret -AsPlainText -VaultName $env:WEBSITE_DEPLOYMENT_ID -Name 'TenantID').SecretValueText
+    }
     $Results = @{
         applicationId = $env:ApplicationID
         tenantId      = $env:TenantID
