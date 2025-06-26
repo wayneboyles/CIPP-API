@@ -42,13 +42,17 @@ function Invoke-CIPPOffboardingJob {
             $Options.AccessAutomap | ForEach-Object { Set-CIPPMailboxAccess -tenantFilter $TenantFilter -userid $username -AccessUser $_.value -Automap $true -AccessRights @('FullAccess') -Headers $Headers -APIName $APIName }
         }
         { $_.OOO } {
-            Set-CIPPOutOfOffice -tenantFilter $TenantFilter -userid $username -InternalMessage $Options.OOO -ExternalMessage $Options.OOO -Headers $Headers -APIName $APIName -state 'Enabled'
+            try {
+                Set-CIPPOutOfOffice -tenantFilter $TenantFilter -UserID $username -InternalMessage $Options.OOO -ExternalMessage $Options.OOO -Headers $Headers -APIName $APIName -state 'Enabled'
+            } catch {
+                $_.Exception.Message
+            }
         }
         { $_.forward } {
-            if (!$Options.keepCopy) {
+            if (!$Options.KeepCopy) {
                 Set-CIPPForwarding -userid $userid -username $username -tenantFilter $TenantFilter -Forward $Options.forward.value -Headers $Headers -APIName $APIName
             } else {
-                $KeepCopy = [boolean]$Options.keepCopy
+                $KeepCopy = [boolean]$Options.KeepCopy
                 Set-CIPPForwarding -userid $userid -username $username -tenantFilter $TenantFilter -Forward $Options.forward.value -KeepCopy $KeepCopy -Headers $Headers -APIName $APIName
             }
         }

@@ -14,9 +14,11 @@
     "Connectwise",
     "CPIM",
     "Datto",
+    "DMARC",
     "endswith",
     "entra",
     "Entra",
+    "exploitability",
     "gdap",
     "GDAP",
     "IMAP",
@@ -93,7 +95,9 @@
     "exo_outlookaddins",
     "exo_mailboxaudit",
     "exo_mailtipsenabled",
-    "mip_search_auditlog"
+    "mip_search_auditlog",
+    "onmicrosoft",
+    "MOERA"
   ],
   "import": []
 }
