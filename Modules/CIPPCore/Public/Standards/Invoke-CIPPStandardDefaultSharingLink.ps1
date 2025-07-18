@@ -30,8 +30,14 @@ function Invoke-CIPPStandardDefaultSharingLink {
     #>
 
     param($Tenant, $Settings)
+    $TestResult = Test-CIPPStandardLicense -StandardName 'DefaultSharingLink' -TenantFilter $Tenant -RequiredCapabilities @('SHAREPOINTWAC', 'SHAREPOINTSTANDARD', 'SHAREPOINTENTERPRISE', 'ONEDRIVE_BASIC', 'ONEDRIVE_ENTERPRISE')
 
     # Determine the desired sharing link type (default to Internal if not specified)
+
+    if ($TestResult -eq $false) {
+        Write-Host "We're exiting as the correct license is not present for this standard."
+        return $true
+    } #we're done.
     $DesiredSharingLinkType = $Settings.SharingLinkType.value ?? 'Internal'
 
     # Map the string values to numeric values for SharePoint
@@ -43,11 +49,11 @@ function Invoke-CIPPStandardDefaultSharingLink {
     $DesiredSharingLinkTypeValue = $SharingLinkTypeMap[$DesiredSharingLinkType]
 
     $CurrentState = Get-CIPPSPOTenant -TenantFilter $Tenant |
-        Select-Object -Property _ObjectIdentity_, TenantFilter, DefaultSharingLinkType, DefaultLinkPermission
+    Select-Object -Property _ObjectIdentity_, TenantFilter, DefaultSharingLinkType, DefaultLinkPermission
 
     # Check if the current state matches the desired configuration
     $StateIsCorrect = ($CurrentState.DefaultSharingLinkType -eq $DesiredSharingLinkTypeValue) -and ($CurrentState.DefaultLinkPermission -eq 1)
-
+    Write-Host "currentstate: $($CurrentState.DefaultSharingLinkType), $($CurrentState.DefaultLinkPermission). Desired: $DesiredSharingLinkTypeValue, 1"
     if ($Settings.remediate -eq $true) {
         if ($StateIsCorrect -eq $true) {
             Write-LogMessage -API 'Standards' -Tenant $Tenant -Message "Default sharing link settings are already configured correctly (Type: $DesiredSharingLinkType, Permission: View)" -Sev Info
