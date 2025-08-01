@@ -72,7 +72,7 @@ function Get-CIPPTenantAlignment {
             if ($FieldValue -is [System.Boolean]) {
                 $FieldValue = [bool]$FieldValue
             } elseif ($FieldValue -like '*{*') {
-                $FieldValue = ConvertFrom-Json -InputObject $FieldValue -ErrorAction SilentlyContinue
+                $FieldValue = ConvertFrom-Json -Depth 100 -InputObject $FieldValue -ErrorAction SilentlyContinue
             } else {
                 $FieldValue = [string]$FieldValue
             }
@@ -259,6 +259,8 @@ function Get-CIPPTenantAlignment {
                     StandardId               = $Template.GUID
                     standardType             = $Template.type
                     standardSettings         = $Template.Standards
+                    driftAlertEmail          = $Template.driftAlertEmail
+                    driftAlertWebhook        = $Template.driftAlertWebhook
                     AlignmentScore           = $AlignmentPercentage
                     LicenseMissingPercentage = $LicenseMissingPercentage
                     CombinedScore            = $AlignmentPercentage + $LicenseMissingPercentage
