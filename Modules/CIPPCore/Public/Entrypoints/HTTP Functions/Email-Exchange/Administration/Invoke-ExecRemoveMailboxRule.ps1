@@ -1,4 +1,4 @@
-﻿using namespace System.Net
+using namespace System.Net
 
 Function Invoke-ExecRemoveMailboxRule {
     <#
@@ -29,8 +29,7 @@ Function Invoke-ExecRemoveMailboxRule {
         $StatusCode = [HttpStatusCode]::InternalServerError
     }
 
-    # Associate values to output bindings by calling 'Push-OutputBinding'.
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+    return ([HttpResponseContext]@{
             StatusCode = $StatusCode
             Body       = @{ 'Results' = $Results }
         })

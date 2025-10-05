@@ -12,7 +12,7 @@ function Invoke-ExecHVEUser {
 
     $APIName = $Request.Params.CIPPEndpoint
     $Headers = $Request.Headers
-    Write-LogMessage -Headers $Headers -API $APIName -message 'Accessed this API' -Sev 'Debug'
+
 
     $Results = [System.Collections.Generic.List[string]]::new()
     $HVEUserObject = $Request.Body
@@ -100,8 +100,7 @@ function Invoke-ExecHVEUser {
         $StatusCode = [HttpStatusCode]::Forbidden
     }
 
-    # Associate values to output bindings by calling 'Push-OutputBinding'.
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+    return ([HttpResponseContext]@{
             StatusCode = $StatusCode
             Body       = @{ Results = @($Results) }
         })

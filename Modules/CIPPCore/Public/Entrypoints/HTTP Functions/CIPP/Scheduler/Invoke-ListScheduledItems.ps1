@@ -9,11 +9,6 @@ function Invoke-ListScheduledItems {
     #>
     [CmdletBinding()]
     param($Request, $TriggerMetadata)
-
-    $APIName = $Request.Params.CIPPEndpoint
-    $Headers = $Request.Headers
-    Write-LogMessage -headers $Headers -API $APIName -message 'Accessed this API' -Sev 'Debug'
-
     $ScheduledItemFilter = [System.Collections.Generic.List[string]]::new()
     $ScheduledItemFilter.Add("PartitionKey eq 'ScheduledTask'")
 
@@ -112,8 +107,7 @@ function Invoke-ListScheduledItems {
         $Task
     }
 
-    # Associate values to output bindings by calling 'Push-OutputBinding'.
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+    return ([HttpResponseContext]@{
             StatusCode = [HttpStatusCode]::OK
             Body       = @($ScheduledTasks | Sort-Object -Property ScheduledTime, ExecutedTime -Descending)
         })

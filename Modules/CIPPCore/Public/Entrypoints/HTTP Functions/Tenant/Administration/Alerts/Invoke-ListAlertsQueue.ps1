@@ -9,12 +9,6 @@ function Invoke-ListAlertsQueue {
     #>
     [CmdletBinding()]
     param($Request, $TriggerMetadata)
-
-    $APIName = $Request.Params.CIPPEndpoint
-    $Headers = $Request.Headers
-    Write-LogMessage -headers $Headers -API $APIName -message 'Accessed this API' -Sev 'Debug'
-
-
     $WebhookTable = Get-CIPPTable -TableName 'WebhookRules'
     $WebhookRules = Get-CIPPAzDataTableEntity @WebhookTable
 
@@ -158,8 +152,7 @@ function Invoke-ListAlertsQueue {
     }
 
     $finalList = ConvertTo-Json -InputObject @($AllTasksArrayList) -Depth 10
-    # Associate values to output bindings by calling 'Push-OutputBinding'.
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+    return ([HttpResponseContext]@{
             StatusCode = [HttpStatusCode]::OK
             Body       = $finalList
         })

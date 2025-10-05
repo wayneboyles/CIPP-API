@@ -13,6 +13,8 @@ function Invoke-CIPPStandardSendReceiveLimitTenant {
         CAT
             Exchange Standards
         TAG
+        EXECUTIVETEXT
+            Establishes standard email attachment size limits for all new employees, balancing functionality with system performance and security. This prevents email system overload from large attachments while ensuring employees can share necessary files through appropriate channels.
         ADDEDCOMPONENT
             {"type":"number","name":"standards.SendReceiveLimitTenant.SendLimit","label":"Send limit in MB (Default is 35)","defaultValue":35}
             {"type":"number","name":"standards.SendReceiveLimitTenant.ReceiveLimit","label":"Receive Limit in MB (Default is 36)","defaultValue":36}
@@ -30,7 +32,7 @@ function Invoke-CIPPStandardSendReceiveLimitTenant {
     #>
 
     param($Tenant, $Settings)
-    $TestResult = Test-CIPPStandardLicense -StandardName 'SendReceiveLimitTenant' -TenantFilter $Tenant -RequiredCapabilities @('EXCHANGE_S_STANDARD', 'EXCHANGE_S_ENTERPRISE', 'EXCHANGE_LITE') #No Foundation because that does not allow powershell access
+    $TestResult = Test-CIPPStandardLicense -StandardName 'SendReceiveLimitTenant' -TenantFilter $Tenant -RequiredCapabilities @('EXCHANGE_S_STANDARD', 'EXCHANGE_S_ENTERPRISE', 'EXCHANGE_S_STANDARD_GOV', 'EXCHANGE_S_ENTERPRISE_GOV', 'EXCHANGE_LITE') #No Foundation because that does not allow powershell access
 
     if ($TestResult -eq $false) {
         Write-Host "We're exiting as the correct license is not present for this standard."

@@ -12,7 +12,7 @@ Function Invoke-RemoveIntuneTemplate {
 
     $APIName = $Request.Params.CIPPEndpoint
     $Headers = $Request.Headers
-    Write-LogMessage -Headers $Headers -API $APIName -message 'Accessed this API' -Sev 'Debug'
+
 
     $ID = $request.Query.ID ?? $Request.Body.ID
     try {
@@ -33,8 +33,7 @@ Function Invoke-RemoveIntuneTemplate {
         $StatusCode = [HttpStatusCode]::InternalServerError
     }
 
-    # Associate values to output bindings by calling 'Push-OutputBinding'.
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+    return ([HttpResponseContext]@{
             StatusCode = $StatusCode
             Body       = @{'Results' = $Result }
         })

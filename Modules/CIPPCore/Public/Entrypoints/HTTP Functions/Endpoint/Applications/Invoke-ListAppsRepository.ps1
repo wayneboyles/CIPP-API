@@ -9,11 +9,6 @@ Function Invoke-ListAppsRepository {
     #>
     [CmdletBinding()]
     param($Request, $TriggerMetadata)
-
-    $APIName = $Request.Params.CIPPEndpoint
-    $Headers = $Request.Headers
-    Write-LogMessage -headers $Headers -API $APIName -message 'Accessed this API' -Sev 'Debug'
-
     $Search = $Request.Body.Search
     $Repository = $Request.Body.Repository
     $Packages = @()
@@ -64,7 +59,7 @@ Function Invoke-ListAppsRepository {
         IsError = $IsError
     }
 
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+    return ([HttpResponseContext]@{
             StatusCode = [HttpStatusCode]::OK
             Body       = $PackageSearch
         })

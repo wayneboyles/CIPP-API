@@ -11,9 +11,6 @@ function Invoke-ListDomainHealth {
     param($Request, $TriggerMetadata)
 
     $APIName = $Request.Params.CIPPEndpoint
-    $Headers = $Request.Headers
-    Write-LogMessage -headers $Headers -API $APIName -message 'Accessed this API' -Sev 'Debug'
-
     Import-Module DNSHealth
 
     try {
@@ -42,9 +39,6 @@ function Invoke-ListDomainHealth {
     $UserRoles = Get-CIPPAccessRole -Request $Request
 
     $APIName = $Request.Params.CIPPEndpoint
-    $Headers = $Request.Headers
-    Write-LogMessage -headers $Headers -API $APIName -message 'Accessed this API' -Sev 'Debug'
-
 
 
     $StatusCode = [HttpStatusCode]::OK
@@ -152,8 +146,7 @@ function Invoke-ListDomainHealth {
         $StatusCode = [HttpStatusCode]::InternalServerError
     }
 
-    # Associate values to output bindings by calling 'Push-OutputBinding'.
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+    return ([HttpResponseContext]@{
             StatusCode = $StatusCode
             Body       = $body
         })

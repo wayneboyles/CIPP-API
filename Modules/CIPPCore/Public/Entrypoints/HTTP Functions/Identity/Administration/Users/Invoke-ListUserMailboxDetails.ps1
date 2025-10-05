@@ -9,12 +9,6 @@ function Invoke-ListUserMailboxDetails {
     #>
     [CmdletBinding()]
     param($Request, $TriggerMetadata)
-
-    $APIName = $Request.Params.CIPPEndpoint
-    $Headers = $Request.Headers
-    Write-LogMessage -headers $Headers -API $APIName -message 'Accessed this API' -Sev 'Debug'
-
-
     # Interact with query parameters or the body of the request.
     $TenantFilter = $Request.Query.tenantFilter
     $UserID = $Request.Query.UserID
@@ -288,13 +282,13 @@ function Invoke-ListUserMailboxDetails {
             LitigationHoldEnabled,
             LitigationHoldDate,
             LitigationHoldDuration,
-            @{ Name = 'LicensedForLitigationHold'; Expression = { ($_.PersistedCapabilities -contains 'BPOS_S_DlpAddOn' -or $_.PersistedCapabilities -contains 'BPOS_S_Enterprise') } },
+            @{ Name = 'LicensedForLitigationHold'; Expression = { ($_.PersistedCapabilities -contains 'EXCHANGE_S_ARCHIVE_ADDON' -or $_.PersistedCapabilities -contains 'EXCHANGE_S_ENTERPRISE') } },
             ComplianceTagHoldApplied,
             RetentionHoldEnabled,
             InPlaceHolds)
     } # Select statement taken from ListMailboxes to save a EXO request. If updated here, update in ListMailboxes as well.
 
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+    return ([HttpResponseContext]@{
             StatusCode = [HttpStatusCode]::OK
             Body       = @($GraphRequest)
         })

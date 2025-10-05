@@ -9,10 +9,8 @@ function Invoke-ExecCSPLicense {
     #>
     [CmdletBinding()]
     param($Request, $TriggerMetadata)
-
-    $APIName = $Request.Params.CIPPEndpoint
     $Headers = $Request.Headers
-    Write-LogMessage -headers $Headers -API $APIName -message 'Accessed this API' -Sev 'Debug'
+
 
     # Interact with query parameters or the body of the request.
     $TenantFilter = $Request.Body.tenantFilter
@@ -41,9 +39,9 @@ function Invoke-ExecCSPLicense {
         $StatusCode = [HttpStatusCode]::InternalServerError
     }
     # If $GraphRequest is a GUID, the subscription was edited successfully, and return that it's done.
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
-            StatusCode = $StatusCode
-            Body       = $Result
-        }) -Clobber
+    return [HttpResponseContext]@{
+        StatusCode = $StatusCode
+        Body       = $Result
+    }
 
 }

@@ -12,7 +12,7 @@ Function Invoke-EditRoomList {
 
     $APIName = $Request.Params.CIPPEndpoint
     $Headers = $Request.Headers
-    Write-LogMessage -headers $Headers -API $APIName -message 'Accessed this API' -Sev 'Debug'
+
 
     $Results = [System.Collections.Generic.List[string]]::new()
     $RoomListObj = $Request.Body
@@ -169,8 +169,7 @@ Function Invoke-EditRoomList {
         Write-LogMessage -headers $Headers -API $APIName -tenant $TenantId -message "Failed to edit room list: $($_.Exception.Message)" -Sev 'Error'
     }
 
-    # Associate values to output bindings by calling 'Push-OutputBinding'.
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+    return ([HttpResponseContext]@{
             StatusCode = [HttpStatusCode]::OK
             Body       = @{'Results' = @($Results) }
         })

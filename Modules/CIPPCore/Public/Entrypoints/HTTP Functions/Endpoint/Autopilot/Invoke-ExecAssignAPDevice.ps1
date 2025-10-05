@@ -36,8 +36,7 @@ Function Invoke-ExecAssignAPDevice {
 
     $Results = [pscustomobject]@{'Results' = "$results" }
 
-    # Associate values to output bindings by calling 'Push-OutputBinding'.
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+    return ([HttpResponseContext]@{
             StatusCode = $StatusCode
             Body       = $Results
         })

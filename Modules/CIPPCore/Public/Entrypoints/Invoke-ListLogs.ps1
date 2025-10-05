@@ -9,11 +9,6 @@ function Invoke-ListLogs {
     #>
     [CmdletBinding()]
     param($Request, $TriggerMetadata)
-
-    $APIName = $Request.Params.CIPPEndpoint
-    $Headers = $Request.Headers
-    Write-LogMessage -headers $Headers -API $APIName -message 'Accessed this API' -Sev 'Debug'
-
     $Table = Get-CIPPTable
 
     $ReturnedLog = if ($Request.Query.ListLogs) {
@@ -128,9 +123,9 @@ function Invoke-ListLogs {
         }
     }
 
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+    return [HttpResponseContext]@{
             StatusCode = [HttpStatusCode]::OK
             Body       = @($ReturnedLog | Sort-Object -Property DateTime -Descending)
-        })
+        }
 
 }

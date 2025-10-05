@@ -29,8 +29,7 @@ Function Invoke-RemoveContactTemplates {
         Write-LogMessage -Headers $User -API $APINAME -message $Result -Sev 'Error' -LogData $ErrorMessage
         $StatusCode = [HttpStatusCode]::Forbidden
     }
-    # Associate values to output bindings by calling 'Push-OutputBinding'.
-    Push-OutputBinding -Name Response -Value ([HttpResponseContext]@{
+    return ([HttpResponseContext]@{
             StatusCode = $StatusCode
             Body       = @{ Results = $Result }
         })
