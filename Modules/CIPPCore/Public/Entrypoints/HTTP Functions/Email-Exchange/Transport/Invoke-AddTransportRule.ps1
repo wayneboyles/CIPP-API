@@ -1,5 +1,3 @@
-using namespace System.Net
-
 function Invoke-AddTransportRule {
     <#
     .FUNCTIONALITY
@@ -15,6 +13,9 @@ function Invoke-AddTransportRule {
     Write-LogMessage -Headers $ExecutingUser -API $APINAME -message 'Accessed this API' -Sev 'Debug'
 
     $RequestParams = $Request.Body.PowerShellCommand | ConvertFrom-Json | Select-Object -Property * -ExcludeProperty GUID, HasSenderOverride, ExceptIfHasSenderOverride, ExceptIfMessageContainsDataClassifications, MessageContainsDataClassifications
+
+    # Remove null properties from payload
+    $RequestParams.PSObject.Properties | Where-Object { $_.Value -eq $null } | ForEach-Object { $RequestParams.PSObject.Properties.Remove($_.Name) }
 
     $Tenants = ($Request.body.selectedTenants).value
 

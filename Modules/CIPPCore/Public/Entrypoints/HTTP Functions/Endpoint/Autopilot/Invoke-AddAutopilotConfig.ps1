@@ -1,5 +1,3 @@
-using namespace System.Net
-
 function Invoke-AddAutopilotConfig {
     <#
     .FUNCTIONALITY
@@ -14,6 +12,10 @@ function Invoke-AddAutopilotConfig {
     $Profbod = [pscustomobject]$Request.Body
     $UserType = if ($Profbod.NotLocalAdmin -eq 'true') { 'standard' } else { 'administrator' }
     $DeploymentMode = if ($Profbod.DeploymentMode -eq 'true') { 'shared' } else { 'singleUser' }
+
+    # If deployment mode is shared, disable white glove (pre-provisioning) as it's not supported
+    $AllowWhiteGlove = if ($DeploymentMode -eq 'shared') { $false } else { $Profbod.allowWhiteGlove }
+
     $profileParams = @{
         DisplayName        = $Request.Body.DisplayName
         Description        = $Request.Body.Description
@@ -21,7 +23,7 @@ function Invoke-AddAutopilotConfig {
         DeploymentMode     = $DeploymentMode
         AssignTo           = $Request.Body.Assignto
         DeviceNameTemplate = $Profbod.DeviceNameTemplate
-        AllowWhiteGlove    = $Profbod.allowWhiteGlove
+        AllowWhiteGlove    = $AllowWhiteGlove
         CollectHash        = $Profbod.CollectHash
         HideChangeAccount  = $Profbod.HideChangeAccount
         HidePrivacy        = $Profbod.HidePrivacy

@@ -1,5 +1,3 @@
-using namespace System.Net
-
 Function Invoke-ExecExtensionSync {
     <#
     .FUNCTIONALITY
@@ -88,7 +86,7 @@ Function Invoke-ExecExtensionSync {
             }
         }
         'Hudu' {
-            Register-CIPPExtensionScheduledTasks -Reschedule
+            Register-CIPPExtensionScheduledTasks -Reschedule -Extensions 'Hudu'
             $Results = [pscustomobject]@{'Results' = 'Extension sync tasks have been rescheduled and will start within 15 minutes' }
         }
 
